@@ -1,6 +1,11 @@
 
 package com.liquiditylab.backend;
 
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -33,5 +38,19 @@ public class AccountController {
                         HttpStatus.NOT_FOUND,
                         "Account not found: " + id
                 ));
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Account createAccount(
+            @Valid @RequestBody CreateAccountRequest request) {
+
+        Account account = new Account(
+                request.accountNumber(),
+                request.accountName(),
+                request.currency()
+        );
+
+        return accountRepository.save(account);
     }
 }
